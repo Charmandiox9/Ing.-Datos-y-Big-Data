@@ -6,6 +6,8 @@ Este documento cubre el diseño de los reportes solicitados para el proyecto de 
 
 La propuesta contempla 15 reportes: cinco de clientes, cinco de procesos/producción y cinco de ventas.
 
+Los bocetos visuales estáticos de estos reportes se pueden revisar en el [índice de mockups](mockups/index.html). Son referencias de composición para la futura implementación en Power BI.
+
 ## Requisito de cumplimiento
 
 | Perspectiva | Cantidad solicitada | Cantidad propuesta |

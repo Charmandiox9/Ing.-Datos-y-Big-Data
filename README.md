@@ -157,6 +157,8 @@ La base debe aparecer como `ONLINE` y la instalación restaurada contiene 71 tab
 
 El diseño de los reportes está en [Entrega_1_Diseno_Reportes.md](Entrega%201/Entrega_1_Diseno_Reportes.md).
 
+Los bocetos visuales estáticos están disponibles en [mockups/index.html](Entrega%201/mockups/index.html). El índice permite navegar entre los 15 reportes propuestos.
+
 La propuesta contiene cinco reportes para cada perspectiva:
 
 - Clientes.
