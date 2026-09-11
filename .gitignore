@@ -1,0 +1,11 @@
+# Respaldos locales de bases de datos. AdventureWorks2022.bak supera el límite
+# de tamaño de archivos de GitHub y debe copiarse manualmente a la raíz.
+*.bak
+
+# Archivos temporales de renderizado y análisis.
+tmp/
+
+# Archivos generados por herramientas locales.
+*.user
+*.suo
+*.log
