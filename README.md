@@ -159,6 +159,8 @@ El diseño de los reportes está en [Entrega_1_Diseno_Reportes.md](Entrega%201/E
 
 Los bocetos visuales estáticos están disponibles en [mockups/index.html](Entrega%201/mockups/index.html). El índice permite navegar entre los 15 reportes propuestos.
 
+El contrato técnico para reproducir los mockups en Power BI está en [powerbi-mapeo.md](Entrega%201/mockups/powerbi-mapeo.md), con medidas DAX sugeridas, relaciones, campos y jerarquías.
+
 La propuesta contiene cinco reportes para cada perspectiva:
 
 - Clientes.

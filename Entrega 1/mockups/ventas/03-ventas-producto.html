@@ -25,6 +25,7 @@
         <p class="nav-label">Documento</p>
         <nav class="nav-list">
           <a class="nav-link" href="../../Entrega_1_Diseno_Reportes.md"><i class="nav-dot"></i>Diseño documentado</a>
+          <a class="nav-link" href="../powerbi-mapeo.md"><i class="nav-dot"></i>Mapa Power BI</a>
           <a class="nav-link" href="../../../README.md"><i class="nav-dot"></i>Guía del proyecto</a>
         </nav>
       </div>
@@ -69,7 +70,20 @@
         </section>
       </div>
 
-      <section class="panel detail-panel">
+     <section class="panel detail-panel">
+      <section class="powerbi-spec">
+        <div class="panel-kicker">Contrato de implementación</div>
+        <h2>Cómo se replica en Power BI</h2>
+        <div class="spec-grid">
+          <div class="spec-item"><span class="spec-label">Visual equivalente</span><div class="spec-value">Barras Top N + treemap</div></div>
+          <div class="spec-item"><span class="spec-label">Medidas DAX sugeridas</span><div class="spec-value"><code>[Ventas Totales] · [Unidades Vendidas] · [Precio Promedio] · [Descuento] · [% Participación]</code></div></div>
+          <div class="spec-item"><span class="spec-label">Campos / dimensiones</span><div class="spec-value"><code>ProductCategory[Name] · ProductSubcategory[Name] · Product[Name]</code></div></div>
+          <div class="spec-item"><span class="spec-label">Drill Down</span><div class="spec-value">Categoría → subcategoría → producto<br><span style="color:#a8c0c8">Filtros: Categoría · Subcategoría · Top N</span></div></div>
+        </div>
+        <p class="spec-note">Las medidas, campos y jerarquías son el contrato entre este boceto y el informe final. Los valores visibles arriba son solo referenciales.</p>
+      </section>
+
+
         <div class="table-head">
           <div><div class="panel-kicker">Detalle consultable</div><h2>Tabla de apoyo</h2></div>
           <div class="table-caption">Interacción futura: seleccionar fila<br>y aplicar Drill Down</div>

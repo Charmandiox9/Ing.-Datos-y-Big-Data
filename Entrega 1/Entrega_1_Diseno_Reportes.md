@@ -8,6 +8,8 @@ La propuesta contempla 15 reportes: cinco de clientes, cinco de procesos/producc
 
 Los bocetos visuales estáticos de estos reportes se pueden revisar en el [índice de mockups](mockups/index.html). Son referencias de composición para la futura implementación en Power BI.
 
+La guía de equivalencia entre cada boceto y Power BI está en [powerbi-mapeo.md](mockups/powerbi-mapeo.md).
+
 ## Requisito de cumplimiento
 
 | Perspectiva | Cantidad solicitada | Cantidad propuesta |
