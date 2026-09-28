@@ -70,20 +70,19 @@
         </section>
       </div>
 
-     <section class="panel detail-panel">
       <section class="powerbi-spec">
-        <div class="panel-kicker">Contrato de implementación</div>
+        <div class="panel-kicker">Contrato de implementación · rpt.C05_ClientesInactivos</div>
         <h2>Cómo se replica en Power BI</h2>
         <div class="spec-grid">
           <div class="spec-item"><span class="spec-label">Visual equivalente</span><div class="spec-value">Línea de actividad + tabla</div></div>
-          <div class="spec-item"><span class="spec-label">Medidas DAX sugeridas</span><div class="spec-value"><code>[Clientes Sin Orden] · [Última Compra] · [Ventas Históricas] · [Días Inactividad]</code></div></div>
-          <div class="spec-item"><span class="spec-label">Campos / dimensiones</span><div class="spec-value"><code>Cliente · SalesOrderHeader[OrderDate] · Territorio</code></div></div>
+          <div class="spec-item"><span class="spec-label">Valores de la vista</span><div class="spec-value"><code>COUNT(CustomerKey) · DiasSinCompra · VentasHistoricas</code></div></div>
+          <div class="spec-item"><span class="spec-label">Campos / dimensiones</span><div class="spec-value"><code>EstadoActividad · TerritoryName · CustomerName</code></div></div>
           <div class="spec-item"><span class="spec-label">Drill Down</span><div class="spec-value">Territorio → cliente<br><span style="color:#a8c0c8">Filtros: Días de inactividad · Territorio · Prioridad</span></div></div>
         </div>
         <p class="spec-note">Las medidas, campos y jerarquías son el contrato entre este boceto y el informe final. Los valores visibles arriba son solo referenciales.</p>
       </section>
 
-
+      <section class="panel detail-panel">
         <div class="table-head">
           <div><div class="panel-kicker">Detalle consultable</div><h2>Tabla de apoyo</h2></div>
           <div class="table-caption">Interacción futura: seleccionar fila<br>y aplicar Drill Down</div>

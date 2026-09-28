@@ -1,0 +1,14 @@
+{
+  "name": "Adventure Works - Sala de control",
+  "dataColors": [
+    "#4FD6B0",
+    "#75B9E6",
+    "#F5A85C",
+    "#EC6B62",
+    "#9B8FE8",
+    "#1B3A52"
+  ],
+  "background": "#F4F0E8",
+  "foreground": "#102337",
+  "tableAccent": "#4FD6B0"
+}

@@ -1,0 +1,5 @@
+IF DB_ID(N'$(TargetDb)') IS NULL
+BEGIN
+    EXEC(N'CREATE DATABASE [$(TargetDb)]');
+END;
+GO

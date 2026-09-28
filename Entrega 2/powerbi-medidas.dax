@@ -1,0 +1,134 @@
+-- Medidas opcionales para el modelo granular de AdventureWorksDW.
+-- En Power BI: importar las tablas dw, crear relaciones por sus claves y
+-- añadir cada definición como Nueva medida. Ajustar el separador DAX según
+-- la configuración regional (coma o punto y coma).
+
+Ventas Totales =
+SUM ( FactSales[SalesAmount] )
+
+Ordenes =
+DISTINCTCOUNT ( FactSales[SalesOrderId] )
+
+Unidades Vendidas =
+SUM ( FactSales[OrderQty] )
+
+Ticket Promedio =
+DIVIDE ( [Ventas Totales], [Ordenes] )
+
+Descuento Total =
+SUM ( FactSales[DiscountAmount] )
+
+Clientes Totales =
+DISTINCTCOUNT ( DimCustomer[CustomerKey] )
+
+Clientes Con Compra =
+DISTINCTCOUNT ( FactSales[CustomerKey] )
+
+Clientes Sin Compra =
+[Clientes Totales] - [Clientes Con Compra]
+
+Clientes Recurrentes =
+COUNTROWS (
+    FILTER (
+        VALUES ( DimCustomer[CustomerKey] ),
+        [Ordenes] > 1
+    )
+)
+
+Clientes Una Compra =
+COUNTROWS (
+    FILTER (
+        VALUES ( DimCustomer[CustomerKey] ),
+        [Ordenes] = 1
+    )
+)
+
+Ordenes Trabajo =
+DISTINCTCOUNT ( FactWorkOrder[WorkOrderId] )
+
+Unidades a Producir =
+SUM ( FactWorkOrder[OrderQty] )
+
+Unidades Rechazadas =
+SUM ( FactWorkOrder[ScrappedQty] )
+
+Tasa Rechazo =
+DIVIDE ( [Unidades Rechazadas], [Unidades a Producir] )
+
+Ordenes Trabajo Terminadas =
+CALCULATE (
+    [Ordenes Trabajo],
+    FactWorkOrder[CompletedFlag] = TRUE ()
+)
+
+Ordenes Trabajo Atrasadas =
+CALCULATE (
+    [Ordenes Trabajo],
+    FactWorkOrder[LateFlag] = TRUE ()
+)
+
+Porcentaje Cumplimiento =
+DIVIDE (
+    [Ordenes Trabajo Terminadas] - [Ordenes Trabajo Atrasadas],
+    [Ordenes Trabajo Terminadas]
+)
+
+Stock Actual =
+SUM ( FactInventory[Quantity] )
+
+Productos con Stock =
+COUNTROWS (
+    FILTER (
+        VALUES ( FactInventory[ProductKey] ),
+        CALCULATE ( [Stock Actual] ) > 0
+    )
+)
+
+Horas Planificadas =
+SUM ( FactRouting[PlannedHours] )
+
+Horas Reales =
+SUM ( FactRouting[ActualHours] )
+
+Desviacion Horas =
+[Horas Reales] - [Horas Planificadas]
+
+Costo Planificado =
+SUM ( FactRouting[PlannedCost] )
+
+Costo Real =
+SUM ( FactRouting[ActualCost] )
+
+Desviacion Costo Porcentaje =
+DIVIDE ( [Costo Real] - [Costo Planificado], [Costo Planificado] )
+
+Ordenes Compra =
+DISTINCTCOUNT ( FactPurchase[PurchaseOrderId] )
+
+Monto Comprado =
+SUM ( FactPurchase[PurchaseAmount] )
+
+Unidades Compradas =
+SUM ( FactPurchase[OrderQty] )
+
+Proveedores Activos =
+DISTINCTCOUNT ( FactPurchase[VendorKey] )
+
+Ventas Online =
+CALCULATE ( [Ventas Totales], FactSales[OnlineOrderFlag] = TRUE () )
+
+Ventas Distribuidor =
+CALCULATE ( [Ventas Totales], FactSales[OnlineOrderFlag] = FALSE () )
+
+Participacion Online =
+DIVIDE ( [Ventas Online], [Ventas Totales] )
+
+Ventas Anio Anterior =
+CALCULATE (
+    [Ventas Totales],
+    DATEADD ( DimDate[CalendarDate], -1, YEAR )
+)
+
+Variacion Ventas Porcentaje =
+DIVIDE ( [Ventas Totales] - [Ventas Anio Anterior], [Ventas Anio Anterior] )
+

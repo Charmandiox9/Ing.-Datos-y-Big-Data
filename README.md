@@ -169,6 +169,16 @@ La propuesta contiene cinco reportes para cada perspectiva:
 
 Cada reporte define su objetivo, KPI, visuales recomendados y tablas fuente. Los reportes finales se implementarán posteriormente en Power BI.
 
+## Entrega 2: ETL y almacén analítico
+
+La implementación está documentada en [Entrega 2/README.md](Entrega%202/README.md). Después de restaurar `AdventureWorks2022`, ejecutar desde la raíz:
+
+```powershell
+& '.\Entrega 2\ejecutar-etl.ps1'
+```
+
+Esto crea `AdventureWorksDW`, carga el modelo analítico, crea 15 vistas para Power BI y valida los resultados. El [diseño final de reportes](Entrega%202/Diseno_Final_Reportes.md) asigna cada mockup a una vista y a visuales concretos.
+
 ## Solución de problemas
 
 ### Docker no inicia

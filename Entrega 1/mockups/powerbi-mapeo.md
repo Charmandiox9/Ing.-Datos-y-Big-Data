@@ -1,5 +1,7 @@
 # Mapeo de mockups a Power BI
 
+La implementación y el mapeo definitivos de la Entrega 2 están en [Diseno_Final_Reportes.md](../../Entrega%202/Diseno_Final_Reportes.md) y [powerbi-medidas.dax](../../Entrega%202/powerbi-medidas.dax). Este documento conserva la propuesta inicial de la Entrega 1.
+
 ## Propósito
 
 Los mockups HTML son bocetos de la capa de presentación. Este documento define el contrato mínimo para reproducir cada página en Power BI conectado a `AdventureWorks2022`.
@@ -92,7 +94,14 @@ Stock Actual =
 SUM ( 'ProductInventory'[Quantity] )
 
 Horas Planificadas =
-SUM ( 'WorkOrderRouting'[PlannedResourceHrs] )
+SUMX (
+    'WorkOrderRouting',
+    DATEDIFF (
+        'WorkOrderRouting'[ScheduledStartDate],
+        'WorkOrderRouting'[ScheduledEndDate],
+        MINUTE
+    ) / 60
+)
 
 Horas Reales =
 SUM ( 'WorkOrderRouting'[ActualResourceHrs] )
