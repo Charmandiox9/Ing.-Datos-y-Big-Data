@@ -10,3 +10,11 @@ tmp/
 *.suo
 *.log
 *.zip
+
+# Archivos auxiliares de LaTeX
+*.aux
+*.nav
+*.out
+*.snm
+*.toc
+*.synctex.gz
