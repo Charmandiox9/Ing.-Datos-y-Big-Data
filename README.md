@@ -31,6 +31,9 @@ Instalar y tener disponibles:
 ├── Entrega 1/
 │   └── Entrega_1_Diseno_Reportes.md
 ├── Entrega 2/
+│   ├── ejecutar-etl.ps1
+│   ├── sql/
+│   └── Diseno_Final_Reportes.md
 └── Entrega 3/
 ```
 
@@ -45,7 +48,9 @@ Realizar las actividades en este orden:
 5. Restaurar la base de datos desde el archivo `.bak`.
 6. Conectarse desde SSMS.
 7. Verificar que `AdventureWorks2022` esté operativa.
-8. Revisar el diseño de los reportes en `Entrega 1/Entrega_1_Diseno_Reportes.md`.
+8. Ejecutar el ETL para crear y cargar `AdventureWorksDW`.
+9. Comprobar la carga y las vistas desde SSMS.
+10. Revisar los diseños de reportes de las Entregas 1 y 2.
 
 ## 1. Obtener el proyecto
 
@@ -171,13 +176,62 @@ Cada reporte define su objetivo, KPI, visuales recomendados y tablas fuente. Los
 
 ## Entrega 2: ETL y almacén analítico
 
-La implementación está documentada en [Entrega 2/README.md](Entrega%202/README.md). Después de restaurar `AdventureWorks2022`, ejecutar desde la raíz:
+El ETL toma la base transaccional `AdventureWorks2022` como fuente y crea una base separada, `AdventureWorksDW`, para análisis. Incluye dimensiones, tablas de hechos y 15 vistas `rpt` que sirven de origen para los gráficos definidos. No modifica las tablas de la fuente.
+
+### Ejecutar el ETL
+
+Desde una terminal PowerShell situada en la **raíz del proyecto**:
+
+1. Iniciar Docker Desktop y comprobar que `docker compose ps` muestra el contenedor `adventureworks-sqlserver` en ejecución.
+2. Si aún no se ha restaurado la fuente, colocar `AdventureWorks2022.bak` en la raíz y ejecutar `.\restaurar-adventureworks.ps1`.
+3. Ejecutar la carga:
 
 ```powershell
 & '.\Entrega 2\ejecutar-etl.ps1'
 ```
 
-Esto crea `AdventureWorksDW`, carga el modelo analítico, crea 15 vistas para Power BI y valida los resultados. El [diseño final de reportes](Entrega%202/Diseno_Final_Reportes.md) asigna cada mockup a una vista y a visuales concretos.
+El script levanta el contenedor si hace falta, espera a que SQL Server esté disponible y ejecuta en orden los archivos de `Entrega 2/sql`: creación de base, esquema, carga, vistas y validación. Al finalizar debe mostrar `VALIDATION_OK` y `ETL completado y validado`. Si se detiene con un error, revisar el mensaje SQL anterior; no dar por terminada la carga.
+
+Si PowerShell bloquea el script, permitir su ejecución solo en la terminal actual y repetir el comando:
+
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass
+& '.\Entrega 2\ejecutar-etl.ps1'
+```
+
+Para cargar **otra base compatible en la misma instancia** (con las tablas y columnas AdventureWorks utilizadas por el ETL), indicar su nombre y, si se quiere conservar el almacén anterior, uno distinto para el destino:
+
+```powershell
+& '.\Entrega 2\ejecutar-etl.ps1' -SourceDb AdventureWorks2019 -TargetDb AdventureWorksDW2019
+```
+
+El script utiliza `MSSQL_SA_PASSWORD` si está definida; de lo contrario usa la contraseña de demostración de `docker-compose.yml`. También acepta `-Password`.
+
+**Importante:** cada nueva ejecución hace una carga completa y reemplaza los datos de las tablas `dw` del **destino seleccionado**. No ejecutarla sobre un almacén con cambios manuales que se quieran conservar. La carga de hechos y dimensiones ocurre en una transacción: si falla, se revierte esa carga.
+
+### Qué hacer después
+
+1. En SSMS, conectarse a `localhost,1433` con `sa` como se indica arriba y abrir `AdventureWorksDW`.
+2. Ejecutar esta consulta para revisar el último estado del ETL y confirmar que existen las 15 vistas:
+
+```sql
+USE AdventureWorksDW;
+
+SELECT TOP (1) RunId, SourceDatabase, Status, StartedAt, FinishedAt
+FROM dw.EtlRun
+ORDER BY RunId DESC;
+
+SELECT COUNT(*) AS VistasReportabilidad
+FROM sys.views
+WHERE schema_id = SCHEMA_ID(N'rpt');
+
+SELECT TOP (10) * FROM rpt.V01_ResumenVentas ORDER BY YearMonth;
+```
+
+3. Comprobar que el último estado sea `SUCCEEDED`, que `VistasReportabilidad` sea `15` y que la consulta de ejemplo devuelva filas.
+4. Para construir los gráficos en Power BI Desktop, conectarse al servidor `localhost,1433`, base `AdventureWorksDW`, e importar las vistas `rpt` necesarias. Seguir el [diseño final de los 15 reportes](Entrega%202/Diseno_Final_Reportes.md).
+
+La [guía detallada de Entrega 2](Entrega%202/README.md) explica el modelo, las opciones de ejecución, la validación y la conexión a Power BI.
 
 ## Solución de problemas
 
