@@ -52,6 +52,29 @@ El inventario se carga como una **foto del estado actual**, con fecha UTC de eje
 
 ## Modelo analítico
 
+### Nombres de territorio
+
+El ETL sustituye nombres de territorio nulos, vacíos o compuestos solo por
+espacios, tabulaciones o saltos de línea por `Sin nombre`. Conserva los nombres
+válidos y los identificadores originales. Las vistas `rpt` muestran
+`Sin territorio` cuando el `LEFT JOIN` no encuentra un territorio.
+No se agregan territorios ficticios ni se reasignan claves.
+
+En `DimCustomer`, el país, región y ciudad ausentes se presentan como
+`Sin país`, `Sin región` y `Sin ciudad`. Se mantienen las claves y los valores
+geográficos informados; no se infiere una dirección a partir del territorio.
+Así la vista `C04_GeografiaClientes` muestra etiquetas en lugar de blancos.
+
+Se mantienen columnas, tipos, relaciones y fórmulas de los reportes. Las vistas
+siguen agrupando por los campos originales; no se fusionan grupos por la etiqueta
+de respaldo. Power BI puede agrupar etiquetas iguales al representarlas y los
+filtros que seleccionaban valores en blanco deben revisarse después de actualizar.
+
+Para aplicar los scripts a SQL Server, ejecutar el ETL indicado arriba y después
+usar **Actualizar** en Power BI Desktop. Esta ejecución reemplaza también la foto
+de inventario según el comportamiento habitual de la carga completa.
+Los cambios en los archivos no actualizan por sí solos la base ni el `.pbix`.
+
 | Capa | Tablas | Grano |
 |---|---|---|
 | Dimensiones | `DimDate`, `DimTerritory`, `DimCustomer`, `DimProduct`, `DimLocation`, `DimVendor`, `DimSalesPerson` | Una fila por entidad o fecha |

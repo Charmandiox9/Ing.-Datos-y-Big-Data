@@ -79,6 +79,31 @@ IF EXISTS (
 )
     THROW 52014, 'Hay compras con claves sin dimensión.', 1;
 
+IF EXISTS (
+    SELECT 1 FROM dw.DimTerritory
+    WHERE NULLIF(LTRIM(RTRIM(REPLACE(REPLACE(REPLACE(
+              REPLACE(TerritoryName, NCHAR(9), N' '), NCHAR(10), N' '),
+              NCHAR(13), N' '), NCHAR(160), N' '))), N'') IS NULL
+)
+    THROW 52015, 'Hay territorios con nombre nulo o vacío.', 1;
+IF (SELECT COUNT_BIG(*) FROM dw.DimTerritory)
+    <> (SELECT COUNT_BIG(*) FROM [$(SourceDb)].Sales.SalesTerritory)
+    THROW 52016, 'Diferencia de filas en territorios.', 1;
+IF EXISTS (
+    SELECT TerritoryKey FROM dw.DimTerritory
+    EXCEPT
+    SELECT TerritoryID FROM [$(SourceDb)].Sales.SalesTerritory
+)
+    THROW 52017, 'Las claves de territorios difieren de la fuente.', 1;
+
+IF EXISTS (
+    SELECT 1 FROM dw.DimCustomer
+    WHERE NULLIF(LTRIM(RTRIM(CountryName)), N'') IS NULL
+       OR NULLIF(LTRIM(RTRIM(StateProvinceName)), N'') IS NULL
+       OR NULLIF(LTRIM(RTRIM(City)), N'') IS NULL
+)
+    THROW 52018, 'Hay clientes con etiquetas geográficas nulas o vacías.', 1;
+
 SELECT 'VALIDATION_OK' AS Result,
        (SELECT COUNT_BIG(*) FROM dw.FactSales) AS SalesRows,
        (SELECT COUNT_BIG(*) FROM dw.FactWorkOrder) AS WorkOrderRows,

@@ -8,7 +8,7 @@ GO
 -- los gráficos se construyen con visuales nativos sobre estos campos.
 
 CREATE OR ALTER VIEW rpt.C01_PerfilClientes AS
-SELECT c.CustomerType, t.TerritoryName,
+SELECT c.CustomerType, ISNULL(t.TerritoryName, N'Sin territorio') AS TerritoryName,
        COUNT_BIG(*) AS Clientes
 FROM dw.DimCustomer c
 LEFT JOIN dw.DimTerritory t ON t.TerritoryKey = c.TerritoryKey
@@ -17,7 +17,7 @@ GO
 
 CREATE OR ALTER VIEW rpt.C02_VentasPorCliente AS
 SELECT c.CustomerKey, c.CustomerName, c.CustomerType,
-       t.TerritoryName,
+       ISNULL(t.TerritoryName, N'Sin territorio') AS TerritoryName,
        COUNT(DISTINCT s.SalesOrderId) AS Ordenes,
        COALESCE(SUM(s.SalesAmount), 0) AS Ventas,
        CONVERT(decimal(19,2), COALESCE(SUM(s.SalesAmount), 0)
@@ -29,7 +29,7 @@ GROUP BY c.CustomerKey, c.CustomerName, c.CustomerType, t.TerritoryName;
 GO
 
 CREATE OR ALTER VIEW rpt.C03_FrecuenciaClientes AS
-SELECT c.CustomerKey, c.CustomerName, t.TerritoryName,
+SELECT c.CustomerKey, c.CustomerName, ISNULL(t.TerritoryName, N'Sin territorio') AS TerritoryName,
        COUNT(DISTINCT s.SalesOrderId) AS Ordenes,
        CASE WHEN COUNT(DISTINCT s.SalesOrderId) = 0 THEN 'Sin compras'
             WHEN COUNT(DISTINCT s.SalesOrderId) = 1 THEN 'Una compra'
@@ -42,7 +42,7 @@ GO
 
 CREATE OR ALTER VIEW rpt.C04_GeografiaClientes AS
 SELECT c.CountryName, c.StateProvinceName, c.City,
-       t.TerritoryName,
+       ISNULL(t.TerritoryName, N'Sin territorio') AS TerritoryName,
        COUNT(DISTINCT c.CustomerKey) AS Clientes,
        COUNT(DISTINCT s.SalesOrderId) AS Ordenes,
        COALESCE(SUM(s.SalesAmount), 0) AS Ventas
@@ -54,7 +54,7 @@ GO
 
 CREATE OR ALTER VIEW rpt.C05_ClientesInactivos AS
 WITH Ultima AS (
-    SELECT c.CustomerKey, c.CustomerName, t.TerritoryName,
+    SELECT c.CustomerKey, c.CustomerName, ISNULL(t.TerritoryName, N'Sin territorio') AS TerritoryName,
            MAX(d.CalendarDate) AS UltimaCompra,
            COUNT(DISTINCT s.SalesOrderId) AS Ordenes,
            COALESCE(SUM(s.SalesAmount), 0) AS VentasHistoricas
@@ -175,7 +175,7 @@ GO
 
 CREATE OR ALTER VIEW rpt.V02_VentasTerritorio AS
 SELECT d.CalendarYear, d.YearMonth,
-       t.TerritoryGroup, t.TerritoryName, t.CountryRegionCode,
+       t.TerritoryGroup, ISNULL(t.TerritoryName, N'Sin territorio') AS TerritoryName, t.CountryRegionCode,
        COUNT(DISTINCT s.SalesOrderId) AS Ordenes,
        SUM(CONVERT(bigint, s.OrderQty)) AS Unidades,
        SUM(s.SalesAmount) AS Ventas
@@ -221,7 +221,7 @@ GO
 CREATE OR ALTER VIEW rpt.V05_DesempenoVendedores AS
 SELECT d.CalendarYear, d.YearMonth,
        sp.SalesPersonKey, sp.SalesPersonName,
-       t.TerritoryName,
+       ISNULL(t.TerritoryName, N'Sin territorio') AS TerritoryName,
        COUNT(DISTINCT s.SalesOrderId) AS Ordenes,
        COUNT(DISTINCT s.CustomerKey) AS ClientesAtendidos,
        SUM(s.SalesAmount) AS Ventas

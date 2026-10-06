@@ -63,7 +63,13 @@ BEGIN TRY
 
     INSERT INTO dw.DimTerritory
         (TerritoryKey, TerritoryName, TerritoryGroup, CountryRegionCode)
-    SELECT TerritoryID, Name, [Group], CountryRegionCode
+    -- Conserva nombres existentes y claves; solo sustituye nombres ausentes.
+    SELECT TerritoryID,
+           CASE WHEN NULLIF(LTRIM(RTRIM(REPLACE(REPLACE(REPLACE(
+                         REPLACE(Name, NCHAR(9), N' '), NCHAR(10), N' '),
+                         NCHAR(13), N' '), NCHAR(160), N' '))), N'') IS NULL
+                THEN N'Sin nombre' ELSE Name END,
+           [Group], CountryRegionCode
     FROM [$(SourceDb)].Sales.SalesTerritory;
 
     INSERT INTO dw.DimCustomer
@@ -75,7 +81,12 @@ BEGIN TRY
                     CONCAT(N'Cliente ', c.CustomerID)),
            CASE WHEN c.StoreID IS NOT NULL THEN 'Tienda' ELSE 'Persona' END,
            c.TerritoryID,
-           cr.Name, sp.Name, a.City
+           CASE WHEN NULLIF(LTRIM(RTRIM(cr.Name)), N'') IS NULL
+                THEN N'Sin país' ELSE cr.Name END,
+           CASE WHEN NULLIF(LTRIM(RTRIM(sp.Name)), N'') IS NULL
+                THEN N'Sin región' ELSE sp.Name END,
+           CASE WHEN NULLIF(LTRIM(RTRIM(a.City)), N'') IS NULL
+                THEN N'Sin ciudad' ELSE a.City END
     FROM [$(SourceDb)].Sales.Customer c
     LEFT JOIN [$(SourceDb)].Sales.Store st
       ON st.BusinessEntityID = c.StoreID
