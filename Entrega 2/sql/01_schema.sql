@@ -156,13 +156,21 @@ IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_FactSales_Date'
     AND object_id = OBJECT_ID(N'dw.FactSales'))
     CREATE INDEX IX_FactSales_Date ON dw.FactSales(OrderDateKey)
         INCLUDE (SalesAmount, OrderQty, CustomerKey, ProductKey, TerritoryKey);
+
 IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_FactSales_Customer'
     AND object_id = OBJECT_ID(N'dw.FactSales'))
     CREATE INDEX IX_FactSales_Customer ON dw.FactSales(CustomerKey)
         INCLUDE (SalesAmount, SalesOrderId, OrderDateKey);
+
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_FactSales_Product'
+    AND object_id = OBJECT_ID(N'dw.FactSales'))
+    CREATE INDEX IX_FactSales_Product ON dw.FactSales(ProductKey)
+        INCLUDE (SalesAmount, OrderQty, OrderDateKey);
+
 IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_FactWorkOrder_Date'
     AND object_id = OBJECT_ID(N'dw.FactWorkOrder'))
     CREATE INDEX IX_FactWorkOrder_Date ON dw.FactWorkOrder(StartDateKey, ProductKey);
+
 IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_FactPurchase_Date'
     AND object_id = OBJECT_ID(N'dw.FactPurchase'))
     CREATE INDEX IX_FactPurchase_Date ON dw.FactPurchase(OrderDateKey, VendorKey);
